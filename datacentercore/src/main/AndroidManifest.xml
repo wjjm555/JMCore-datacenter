@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <permission
+        android:name="com.wjjm.vehicle.datacentercore.READ"
+        android:protectionLevel="normal" />
+    <permission
+        android:name="com.wjjm.vehicle.datacentercore.WRITE"
+        android:protectionLevel="normal" />
+
+    <application>
+
+        <provider
+            android:name=".DataCenterProvider"
+            android:authorities="com.wjjm.vehicle.datacentercore"
+            android:exported="true"
+            android:readPermission="com.wjjm.vehicle.datacentercore.READ"
+            android:writePermission="com.wjjm.vehicle.datacentercore.WRITE" />
+
+        <receiver
+            android:name="com.wjjm.vehicle.datacentercore.Backdoor"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.wjjm.vehicle.datacenter.BACKDOOR" />
+            </intent-filter>
+        </receiver>
+    </application>
+</manifest>
