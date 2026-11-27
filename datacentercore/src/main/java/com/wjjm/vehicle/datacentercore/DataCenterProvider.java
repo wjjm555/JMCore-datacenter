@@ -12,6 +12,7 @@ public class DataCenterProvider extends ContentProvider {
     private DataCenterProvideAdapter adapter;
 
     @Override public boolean onCreate() {
+        DataCenter.getInstance().init(getContext().getApplicationContext());
         adapter = new RoomDataCenterProvideAdapter(getContext());
         return true;
     }

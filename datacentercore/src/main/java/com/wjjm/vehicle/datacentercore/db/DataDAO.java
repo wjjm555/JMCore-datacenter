@@ -18,8 +18,8 @@ public interface DataDAO {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertData(DataBean... beans);
 
-    @Query("SELECT * FROM " + TABLE_NAME + " WHERE `key` IN (:selectionArgs) ORDER BY :sortOrder")
-    Cursor queryData(String[] selectionArgs, String sortOrder);
+    @Query("SELECT * FROM " + TABLE_NAME + " WHERE `key` IN (:selectionArgs)")
+    Cursor queryData(String[] selectionArgs);
 
     @Query("DELETE FROM " + TABLE_NAME + " WHERE `key` IN (:selectionArgs)")
     int deleteData(String[] selectionArgs);

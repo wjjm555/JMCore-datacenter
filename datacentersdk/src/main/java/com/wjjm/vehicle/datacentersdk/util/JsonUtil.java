@@ -1,7 +1,6 @@
 package com.wjjm.vehicle.datacentersdk.util;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import java.lang.reflect.Type;
 
@@ -18,7 +17,7 @@ public class JsonUtil {
     }
 
     private JsonUtil() {
-        gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+        gson = new Gson();
     }
 
     public String toJson(Object src) {

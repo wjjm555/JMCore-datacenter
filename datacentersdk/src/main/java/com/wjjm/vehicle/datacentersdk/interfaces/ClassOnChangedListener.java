@@ -14,6 +14,15 @@ public abstract class ClassOnChangedListener<T> implements OnChangedListener {
 
     @Override
     public final void onChanged(String key, String value) {
-        onDataChanged(key, JsonUtil.getInstance().fromJson(value, tClass));
+        onDataChanged(key, convert(value));
+    }
+
+    private T convert(String value) {
+        if (value == null || value.length() == 0) return null;
+        try {
+            return JsonUtil.getInstance().fromJson(value, tClass);
+        } catch (Exception e) {
+            return null;
+        }
     }
 }

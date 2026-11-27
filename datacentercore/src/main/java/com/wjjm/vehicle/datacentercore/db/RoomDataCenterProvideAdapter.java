@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.UriMatcher;
 import android.database.Cursor;
+import android.database.MatrixCursor;
 import android.net.Uri;
 
 import com.wjjm.vehicle.datacentercore.DataCenter;
@@ -18,7 +19,7 @@ public class RoomDataCenterProvideAdapter extends DataCenterProvideAdapter {
 
     private static final int MATCH_CODE_DATACENTER = 100;
 
-    private static UriMatcher uriMatcher;
+    private final UriMatcher uriMatcher;
 
     public RoomDataCenterProvideAdapter(Context context) {
         super(context);
@@ -33,55 +34,52 @@ public class RoomDataCenterProvideAdapter extends DataCenterProvideAdapter {
 
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
-        int match = uriMatcher.match(uri);
-        if (match == MATCH_CODE_DATACENTER) {
-            return DataCenter.getInstance().getDao().queryData(selectionArgs, sortOrder);
+        if (uriMatcher.match(uri) != MATCH_CODE_DATACENTER) return null;
+        if (selectionArgs == null || selectionArgs.length == 0) {
+            return new MatrixCursor(new String[]{KEY, VALUE}, 0);
         }
-        return null;
+        return DataCenter.getInstance().getDao().queryData(selectionArgs);
     }
 
     @Override
     public Uri insert(Uri uri, ContentValues values) {
-        if (uriMatcher.match(uri) == MATCH_CODE_DATACENTER) {
-            String key = values.getAsString(KEY);
-            DataBean dataBean = new DataBean(key, values.getAsString(VALUE));
-            DataCenter.getInstance().getDao().insertData(dataBean);
-            Uri insertUri = parseUri(key);
-            notifyChange(insertUri);
-            return insertUri;
-        }
-
-        return null;
+        if (uriMatcher.match(uri) != MATCH_CODE_DATACENTER) return null;
+        if (values == null || !values.containsKey(KEY)) return null;
+        String key = values.getAsString(KEY);
+        DataBean dataBean = new DataBean(key, values.getAsString(VALUE));
+        DataCenter.getInstance().getDao().insertData(dataBean);
+        Uri insertUri = parseUri(key);
+        notifyChange(insertUri);
+        return insertUri;
     }
 
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
-        if (uriMatcher.match(uri) == MATCH_CODE_DATACENTER) {
-            int count = DataCenter.getInstance().getDao().deleteData(selectionArgs);
-            if (count > 0) {
-                for (String key : selectionArgs) {
-                    notifyChange(parseUri(key));
-                }
+        if (uriMatcher.match(uri) != MATCH_CODE_DATACENTER) return 0;
+        if (selectionArgs == null || selectionArgs.length == 0) return 0;
+        int count = DataCenter.getInstance().getDao().deleteData(selectionArgs);
+        if (count > 0) {
+            for (String key : selectionArgs) {
+                notifyChange(parseUri(key));
             }
-            return count;
         }
-        return 0;
+        return count;
     }
 
     @Override
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
-        if (uriMatcher.match(uri) == MATCH_CODE_DATACENTER) {
-            String value = values.getAsString(VALUE);
-            int count = DataCenter.getInstance().getDao().updateData(value, selectionArgs);
-            if (count <= 0) {
-                DataCenter.getInstance().getDao().insertData(new DataBean(selectionArgs[0], value));
-            }
-            for (String key : selectionArgs) {
-                notifyChange(parseUri(key));
-            }
-            return count;
+        if (uriMatcher.match(uri) != MATCH_CODE_DATACENTER) return 0;
+        if (values == null || !values.containsKey(VALUE)) return 0;
+        if (selectionArgs == null || selectionArgs.length == 0) return 0;
+        String value = values.getAsString(VALUE);
+        int count = DataCenter.getInstance().getDao().updateData(value, selectionArgs);
+        if (count <= 0) {
+            DataCenter.getInstance().getDao().insertData(new DataBean(selectionArgs[0], value));
         }
-        return 0;
+        for (String key : selectionArgs) {
+            notifyChange(parseUri(key));
+        }
+        return count;
     }
 
     private void notifyChange(Uri uri) {

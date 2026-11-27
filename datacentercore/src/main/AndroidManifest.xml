@@ -19,9 +19,10 @@
 
         <receiver
             android:name="com.wjjm.vehicle.datacentercore.Backdoor"
-            android:exported="true">
+            android:enabled="false"
+            android:exported="false">
             <intent-filter>
-                <action android:name="com.wjjm.vehicle.datacenter.BACKDOOR" />
+                <action android:name="com.wjjm.vehicle.datacentercore.BACKDOOR" />
             </intent-filter>
         </receiver>
     </application>

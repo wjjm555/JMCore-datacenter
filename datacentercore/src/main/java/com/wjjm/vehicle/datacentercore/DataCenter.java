@@ -27,7 +27,9 @@ public class DataCenter {
 
     public void init(Context context) {
         synchronized (this) {
-            dataBase = Room.databaseBuilder(context, DataCenterDataBase.class, TABLE_FILE_NAME)
+            if (dataBase != null) return;
+            if (context == null) return;
+            dataBase = Room.databaseBuilder(context.getApplicationContext(), DataCenterDataBase.class, TABLE_FILE_NAME)
 //                .addMigrations()
                     .allowMainThreadQueries().build();
         }
@@ -35,6 +37,9 @@ public class DataCenter {
 
     public DataDAO getDao() {
         synchronized (this) {
+            if (dataBase == null) {
+                throw new IllegalStateException("DataCenter is not initialized, call init(Context) first");
+            }
             return dataBase.dataDAO();
         }
     }
