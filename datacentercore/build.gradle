@@ -1,5 +1,6 @@
 plugins {
     id 'com.android.library'
+    id 'maven-publish'
 }
 
 android {
@@ -28,6 +29,10 @@ android {
         }
     }
 
+    publishing {
+        singleVariant("release")
+    }
+
     testOptions {
         unitTests {
             includeAndroidResources = true
@@ -47,4 +52,17 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'org.robolectric:robolectric:4.11.1'
     testImplementation 'androidx.lifecycle:lifecycle-livedata-core:2.5.1'
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from components.release
+                groupId = 'com.github.wjjm555.WJCore-datacenter'
+                artifactId = 'datacentercore'
+                version = '1.0.0'
+            }
+        }
+    }
 }
