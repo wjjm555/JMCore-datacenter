@@ -1,10 +1,10 @@
-# WJCore · datacenter
+# JMCore · datacenter
 
 [English](README_EN.md) | 中文
 
 ## 一、系列介绍
 
-**WJCore** 是一系列面向 Android / Java 的开源框架库,统一使用 `com.wjjm.vehicle` 命名空间,全部采用 Apache License 2.0 协议发布。系列内模块职责单一、低耦合,可按需单独引用。
+**JMCore** 是一系列面向 Android / Java 的开源框架库,统一使用 `com.wjjm.vehicle` 命名空间,全部采用 Apache License 2.0 协议发布。系列内模块职责单一、低耦合,可按需单独引用。
 
 | 模块 | 说明 |
 | --- | --- |
@@ -131,12 +131,12 @@ repositories {
 
 dependencies {
     // 存储端(注册 Provider,负责落盘)
-    implementation 'com.github.wjjm555.WJCore-datacenter:datacentercore:1.0.0'
+    implementation 'com.github.wjjm555.JMCore-datacenter:datacentercore:1.0.0'
     // 客户端(读写与监听)
-    implementation 'com.github.wjjm555.WJCore-datacenter:datacentersdk:1.0.0'
+    implementation 'com.github.wjjm555.JMCore-datacenter:datacentersdk:1.0.0'
 
     // 或直接引入聚合模块(同时包含以上两个模块)
-    // implementation 'com.github.wjjm555:WJCore-datacenter:1.0.0'
+    // implementation 'com.github.wjjm555:JMCore-datacenter:1.0.0'
 }
 ```
 

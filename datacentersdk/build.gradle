@@ -51,7 +51,7 @@ afterEvaluate {
         publications {
             release(MavenPublication) {
                 from components.release
-                groupId = 'com.github.wjjm555.WJCore-datacenter'
+                groupId = 'com.github.wjjm555.JMCore-datacenter'
                 artifactId = 'datacentersdk'
                 version = '1.0.0'
             }

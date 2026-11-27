@@ -1,10 +1,10 @@
-# WJCore · datacenter
+# JMCore · datacenter
 
 [中文](README.md) | English
 
 ## 1. Series Introduction
 
-**WJCore** is a series of open-source framework libraries for Android / Java, unified under the `com.wjjm.vehicle` namespace and released under the Apache License 2.0. Each module in the series has a single responsibility and low coupling, so they can be referenced independently as needed.
+**JMCore** is a series of open-source framework libraries for Android / Java, unified under the `com.wjjm.vehicle` namespace and released under the Apache License 2.0. Each module in the series has a single responsibility and low coupling, so they can be referenced independently as needed.
 
 | Module | Description |
 | --- | --- |
@@ -131,12 +131,12 @@ repositories {
 
 dependencies {
     // storage side (registers the Provider, persists data)
-    implementation 'com.github.wjjm555.WJCore-datacenter:datacentercore:1.0.0'
+    implementation 'com.github.wjjm555.JMCore-datacenter:datacentercore:1.0.0'
     // client side (read, write and listen)
-    implementation 'com.github.wjjm555.WJCore-datacenter:datacentersdk:1.0.0'
+    implementation 'com.github.wjjm555.JMCore-datacenter:datacentersdk:1.0.0'
 
     // or use the aggregate module (pulls in both modules above)
-    // implementation 'com.github.wjjm555:WJCore-datacenter:1.0.0'
+    // implementation 'com.github.wjjm555:JMCore-datacenter:1.0.0'
 }
 ```
 
