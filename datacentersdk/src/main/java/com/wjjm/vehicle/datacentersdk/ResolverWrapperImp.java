@@ -156,8 +156,10 @@ class ResolverWrapperImp extends ResolverWrapper implements MyContentObserver.On
     private String cursorToString(Cursor cursor) {
         String value = "";
         if (cursor != null) {
-            if (cursor.moveToNext())
-                value = cursor.getString(cursor.getColumnIndex(VALUE));
+            if (cursor.moveToNext()) {
+                int index = cursor.getColumnIndex(VALUE);
+                if (index >= 0) value = cursor.getString(index);
+            }
             cursor.close();
         }
         return value;

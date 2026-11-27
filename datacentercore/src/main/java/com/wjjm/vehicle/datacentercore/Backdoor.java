@@ -78,8 +78,10 @@ public class Backdoor extends BroadcastReceiver {
                 if (!TextUtils.isEmpty(key)) {
                     Cursor cursor = DataCenter.getInstance().getDao().queryData(new String[]{key});
                     try {
-                        if (cursor != null && cursor.moveToNext())
-                            Log.i(TAG, key + ":" + cursor.getString(cursor.getColumnIndex(VALUE)));
+                        if (cursor != null && cursor.moveToNext()) {
+                            int index = cursor.getColumnIndex(VALUE);
+                            Log.i(TAG, key + ":" + (index >= 0 ? cursor.getString(index) : null));
+                        }
                     } finally {
                         if (cursor != null) cursor.close();
                     }
