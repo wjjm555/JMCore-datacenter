@@ -7,9 +7,9 @@ import android.database.Cursor;
 import android.os.Handler;
 import android.os.Looper;
 
-import com.google.gson.reflect.TypeToken;
 import com.wjjm.vehicle.datacentersdk.interfaces.OnChangedListener;
 import com.wjjm.vehicle.datacentersdk.util.JsonUtil;
+import com.wjjm.vehicle.datacentersdk.util.TypeToken;
 import com.wjjm.vehicle.datacentersdk.util.UriUtil;
 
 import java.lang.reflect.Type;

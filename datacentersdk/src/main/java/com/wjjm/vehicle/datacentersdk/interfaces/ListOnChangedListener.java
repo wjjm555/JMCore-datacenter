@@ -1,6 +1,6 @@
 package com.wjjm.vehicle.datacentersdk.interfaces;
 
-import com.google.gson.reflect.TypeToken;
+import com.wjjm.vehicle.datacentersdk.util.TypeToken;
 
 import java.util.List;
 

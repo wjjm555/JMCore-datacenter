@@ -8,6 +8,10 @@ import com.wjjm.vehicle.datacentercore.DataCenter;
 import com.wjjm.vehicle.datacentercore.DataCenterProvider;
 import com.wjjm.vehicle.datacentersdk.interfaces.IntOnChangedListener;
 import com.wjjm.vehicle.datacentersdk.interfaces.SimpleOnChangedListener;
+import com.wjjm.vehicle.datacentersdk.util.JsonConverter;
+import com.wjjm.vehicle.datacentersdk.util.JsonUtil;
+import com.wjjm.vehicle.datacentersdk.util.OrgJsonConverter;
+import com.wjjm.vehicle.datacentersdk.util.TypeToken;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -114,17 +118,17 @@ public class DataClientTest {
     public void testTypedListRoundtrip() {
         List<Integer> list = Arrays.asList(1, 2, 3);
         client.insertToDataCenter("list", list);
-        Type type = new com.google.gson.reflect.TypeToken<List<Integer>>() {
+        Type type = new TypeToken<List<Integer>>() {
         }.getType();
         assertEquals(list, client.<List<Integer>>queryFromDataCenter("list", type));
     }
 
     @Test
-    public void testRawListQueryReturnsJsonNumbersAsDouble() {
-        // queryListFromDataCenter 无法获知元素类型,JSON 数字按 Double 解析
+    public void testRawListQueryReturnsJsonNumbers() {
+        // queryListFromDataCenter 无法获知元素类型,整数按 Integer 解析
         List<Integer> list = Arrays.asList(1, 2, 3);
         client.insertToDataCenter("list", list);
-        assertEquals(Arrays.asList(1.0, 2.0, 3.0), client.queryListFromDataCenter("list"));
+        assertEquals(Arrays.asList(1, 2, 3), client.queryListFromDataCenter("list"));
     }
 
     @Test
@@ -133,20 +137,20 @@ public class DataClientTest {
         map.put("a", 1);
         map.put("b", 2);
         client.insertToDataCenter("map", map);
-        Type type = new com.google.gson.reflect.TypeToken<Map<String, Integer>>() {
+        Type type = new TypeToken<Map<String, Integer>>() {
         }.getType();
         assertEquals(map, client.<Map<String, Integer>>queryFromDataCenter("map", type));
     }
 
     @Test
-    public void testRawMapQueryReturnsJsonNumbersAsDouble() {
+    public void testRawMapQueryReturnsJsonNumbers() {
         Map<String, Integer> map = new HashMap<>();
         map.put("a", 1);
         map.put("b", 2);
         client.insertToDataCenter("map", map);
-        Map<String, Double> expected = new HashMap<>();
-        expected.put("a", 1.0);
-        expected.put("b", 2.0);
+        Map<String, Integer> expected = new HashMap<>();
+        expected.put("a", 1);
+        expected.put("b", 2);
         assertEquals(expected, client.queryMapFromDataCenter("map"));
     }
 
@@ -252,5 +256,35 @@ public class DataClientTest {
         client.insertToDataCenter("key", "2");
         flushMainLooper();
         assertEquals(Arrays.asList("1"), received);
+    }
+
+    @Test
+    public void testCustomConverterPlugin() {
+        try {
+            JsonUtil.setConverter(new JsonConverter() {
+                @Override
+                public String toJson(Object src) {
+                    return "custom|" + src;
+                }
+
+                @Override
+                public <T> T fromJson(String json, Class<T> classOfT) {
+                    if (json == null || !json.startsWith("custom|")) return null;
+                    String value = json.substring("custom|".length());
+                    if (classOfT == Integer.class) return (T) Integer.valueOf(value);
+                    return (T) value;
+                }
+
+                @Override
+                public <T> T fromJson(String json, Type typeOfT) {
+                    return (T) fromJson(json, Object.class);
+                }
+            });
+            client.insertToDataCenter("plugin", 123);
+            assertEquals("custom|123", client.queryFromDataCenter("plugin"));
+            assertEquals(Integer.valueOf(123), client.queryFromDataCenter("plugin", Integer.class));
+        } finally {
+            JsonUtil.setConverter(new OrgJsonConverter());
+        }
     }
 }

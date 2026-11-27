@@ -1,12 +1,14 @@
 package com.wjjm.vehicle.datacentersdk.util;
 
-import com.google.gson.Gson;
-
 import java.lang.reflect.Type;
 
+/**
+ * JSON 门面。默认使用 {@link OrgJsonConverter}(Android 自带 org.json,零三方依赖),
+ * 可通过 {@link #setConverter(JsonConverter)} 全局替换为自定义实现(如 Gson)。
+ */
 public class JsonUtil {
 
-    private final Gson gson;
+    private static volatile JsonConverter converter = new OrgJsonConverter();
 
     public static JsonUtil getInstance() {
         return JsonUtil.InnerHolder.INSTANCE;
@@ -17,18 +19,23 @@ public class JsonUtil {
     }
 
     private JsonUtil() {
-        gson = new Gson();
+    }
+
+    public static void setConverter(JsonConverter jsonConverter) {
+        if (jsonConverter != null) {
+            converter = jsonConverter;
+        }
     }
 
     public String toJson(Object src) {
-        return gson.toJson(src);
+        return converter.toJson(src);
     }
 
     public <T> T fromJson(String json, Class<T> classOfT) {
-        return gson.fromJson(json, classOfT);
+        return converter.fromJson(json, classOfT);
     }
 
     public <T> T fromJson(String json, Type typeOfT) {
-        return gson.fromJson(json, typeOfT);
+        return converter.fromJson(json, typeOfT);
     }
 }
